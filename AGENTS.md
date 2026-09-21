@@ -97,6 +97,11 @@ When the user requests a durable behavior change, record it here or in the relev
 - All backend traffic goes through `frontend/src/lib/api.ts` (base `/api`, proxied by Vite to `:3003`); auth is email + password only, the JWT lives in localStorage, and any 401 redirects to `/login`
 - Themes: the default lives in `src/assets/main.css`; each extra theme is a `[data-theme]` block pair in `src/assets/themes.css` plus an entry in `src/composables/useTheme.ts`. Users pick theme and dark mode on the Settings page
 
+## Deployment
+
+- `bin/` (repo root) holds server scripts: `setup.sh` (one-time: bun, node, pm2, serve, Docker), `deploy.sh` (git reset to `origin/<branch>`, `bun install --frozen-lockfile`, `bun run build`, `pm2 startOrReload ecosystem.config.js`), `sync.sh` (rsync alternative to git), `update-deps.sh`
+- `ecosystem.config.js` runs `app-backend` (bun, `backend/dist/main.js`, env from `backend/.env`) and `app-frontend` (`serve` of `frontend/dist` on :8080, SPA mode). The frontend calls `/api`, so the reverse proxy must map `/api` to the backend port with the prefix stripped (as Vite does in dev)
+
 ## Agent skills
 
 ### Issue tracker

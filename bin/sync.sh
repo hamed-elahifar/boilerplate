@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Sync Node.js project to Ubuntu server
-# Usage: ./sync-to-server.sh [--dry-run] [server_folder_path]
+# Usage: ./bin/sync.sh [--dry-run] [server_folder_path]
 
 set -e  # Exit on error
 
@@ -35,14 +35,15 @@ if [ "$DRY_RUN" = true ]; then
 fi
 
 # Build rsync options
-RSYNC_OPTS="-avz --delete --exclude='.env'"
+# .env, node_modules, logs and builds stay server-side; deploy.sh rebuilds them
+RSYNC_OPTS=(-avz --delete --exclude=.env --exclude=node_modules --exclude=.git --exclude=logs --exclude=dist)
 if [ "$DRY_RUN" = true ]; then
-    RSYNC_OPTS="$RSYNC_OPTS -n"
+    RSYNC_OPTS+=(-n)
 fi
 
 # Dry run or confirm real sync
 echo -e "${YELLOW}Preview:${NC}"
-rsync $RSYNC_OPTS "$LOCAL_PATH" "${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}"
+rsync "${RSYNC_OPTS[@]}" "$LOCAL_PATH" "${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}"
 
 if [ "$DRY_RUN" = true ]; then
     echo -e "${GREEN}Dry run complete (no changes made)!${NC}"
@@ -57,6 +58,6 @@ if [[ ! "$response" =~ ^[Yy]$ ]]; then
 fi
 
 # Real sync
-rsync $RSYNC_OPTS "$LOCAL_PATH" "${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}"
+rsync "${RSYNC_OPTS[@]}" "$LOCAL_PATH" "${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}"
 
 echo -e "${GREEN}Sync complete!${NC}"

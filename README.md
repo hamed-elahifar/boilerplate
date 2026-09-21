@@ -13,7 +13,7 @@ Starting point for new applications: a NestJS + MongoDB REST API and a Vue 3 fro
 | i18n     | `nestjs-i18n`: `fa` and `en`, per request                                                    |
 | Frontend | Vue 3 + Vite + TypeScript, Tailwind v4, shadcn-vue (reka-ui), vue-router, RTL, Vazirmatn font |
 | Tests    | Jest + supertest e2e against a real MongoDB                                                  |
-| Deploy   | PM2 (`ecosystem.config.js`) or Docker (`backend/Dockerfile`, `backend/docker-compose.yml`)   |
+| Deploy   | PM2 (`ecosystem.config.js`, `bin/deploy.sh`) or Docker (`backend/Dockerfile`, `backend/docker-compose.yml`)   |
 
 Not included on purpose (add when needed): GraphQL, Redis/cache, websockets, file storage, SMS/push.
 

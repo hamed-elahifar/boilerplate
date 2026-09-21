@@ -1,0 +1,17 @@
+{
+  "email": "Invalid email format",
+  "isEmail": "Invalid email format",
+  "isNotEmpty": "{property} must not be empty",
+  "isString": "{property} must be a string",
+  "isPhoneNumber": "Invalid phone number",
+  "isArray": "{property} must be an array",
+  "isBoolean": "{property} must be a boolean",
+  "isDefined": "{property} is required",
+  "isEnum": "{property} has an invalid value",
+  "isInt": "{property} must be an integer",
+  "isMongoId": "{property} is not a valid id",
+  "isNumber": "{property} must be a number",
+  "isObject": "{property} must be an object",
+  "min": "{property} is below the minimum",
+  "minLength": "{property} is too short"
+}

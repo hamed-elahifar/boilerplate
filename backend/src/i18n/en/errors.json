@@ -1,0 +1,21 @@
+{
+  "status": {
+    "400": "Bad request",
+    "401": "Authentication required",
+    "403": "You are not allowed to do this",
+    "404": "Not found",
+    "409": "Duplicate data",
+    "500": "Internal server error"
+  },
+  "userExists": "This user already exists",
+  "signedUp": "Signed up successfully",
+  "invalidCredentials": "Invalid username or password",
+  "userMissing": "User not found",
+  "roleForbidden": "You are not allowed to do this",
+  "notFound": "{entity} not found",
+  "duplicate": "The value \"{value}\" for {field} already exists",
+  "duplicateKey": "Duplicate value",
+  "dbFailed": "Database operation failed",
+  "required": "is required",
+  "invalid": "is invalid"
+}

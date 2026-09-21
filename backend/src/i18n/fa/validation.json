@@ -1,0 +1,17 @@
+{
+  "email": "فرمت ایمیل نامعتبر است",
+  "isEmail": "فرمت ایمیل نامعتبر است",
+  "isNotEmpty": "{property} نباید خالی باشد",
+  "isString": "{property} باید متن باشد",
+  "isPhoneNumber": "شماره تلفن نامعتبر است",
+  "isArray": "{property} باید آرایه باشد",
+  "isBoolean": "{property} باید درست یا نادرست باشد",
+  "isDefined": "{property} الزامی است",
+  "isEnum": "{property} مقدار مجاز نیست",
+  "isInt": "{property} باید عدد صحیح باشد",
+  "isMongoId": "{property} شناسه معتبر نیست",
+  "isNumber": "{property} باید عدد باشد",
+  "isObject": "{property} باید شیء باشد",
+  "min": "{property} کمتر از حد مجاز است",
+  "minLength": "{property} کوتاه‌تر از حد مجاز است"
+}

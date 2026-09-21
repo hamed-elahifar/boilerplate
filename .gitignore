@@ -25,3 +25,7 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# Logs (deploy + pm2)
+logs/
+*.log

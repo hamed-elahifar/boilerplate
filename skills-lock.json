@@ -1,6 +1,11 @@
 {
   "version": 1,
   "skills": {
+    "accessibility": {
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "bffe3d08cfe92ebad63699f74ce29e35c19850ebfbf474c1463183cfe34d6a09"
+    },
     "ask-matt": {
       "source": "mattpocock/skills",
       "sourceType": "github",
@@ -155,6 +160,11 @@
       "skillPath": "skills/misc/scaffold-exercises/SKILL.md",
       "computedHash": "354c91f6dbc9b058632f30594aacb4edc6d25012596585abb00402af8d7ec5e9"
     },
+    "seo": {
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "c184da724d1c61ad077f27418ea8e7e88fd54bcdf98165e18be7e4681cbd5e20"
+    },
     "setup-matt-pocock-skills": {
       "source": "mattpocock/skills",
       "sourceType": "github",
@@ -172,6 +182,21 @@
       "sourceType": "github",
       "skillPath": "skills/in-progress/setup-ts-deep-modules/SKILL.md",
       "computedHash": "61508216ede38d8cfa712879197a76f75f4896615dbf7abc3f62571f8f5923cc"
+    },
+    "shadcn": {
+      "source": "shadcn/ui",
+      "sourceType": "autoskills-registry",
+      "computedHash": "3e8ca56eb3af0f18b9cca3ae002f2b52f5dd23bceb286dd7403e18ae2fb38d08"
+    },
+    "tailwind-css-patterns": {
+      "source": "giuseppe-trisciuoglio/developer-kit",
+      "sourceType": "autoskills-registry",
+      "computedHash": "8fd534b64b3f305ade80c207e2f9ba4338d5e409e355af9f724c36764b6709c1"
+    },
+    "tailwind-v4-shadcn": {
+      "source": "secondsky/claude-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "551eb86a35cbf35747cc1a58059ed7e73aacdf03d2fd2e12f63208ea2c0a4ae9"
     },
     "tdd": {
       "source": "mattpocock/skills",
@@ -226,6 +251,11 @@
       "skillPath": "SKILL.md",
       "computedHash": "7fcb511111a6d234d56dc1d9d38e0ae754c1762945ad7cd26679e799ee5e64ed"
     },
+    "vite": {
+      "source": "antfu/skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "e0b52fe3ffea533e1e543ac8a8a20fccca3beed9f8bdc31a0934fe9f554439e8"
+    },
     "vue": {
       "source": "antfu/skills",
       "sourceType": "github",
@@ -237,6 +267,11 @@
       "sourceType": "github",
       "skillPath": "skills/vue-best-practices/SKILL.md",
       "computedHash": "3df585ad31aec78fe55c56c1411262737e6b231677a3153dec512a882fde80cd"
+    },
+    "vue-debug-guides": {
+      "source": "hyf0/vue-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "ef84274bb3af820e3ede22cb55863e6b0755eabe597713707ae9051a81ef3a02"
     },
     "wait-what": {
       "source": "mattpocock/skills",

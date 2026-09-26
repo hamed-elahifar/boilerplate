@@ -99,7 +99,7 @@ When the user requests a durable behavior change, record it here or in the relev
 
 ## Deployment
 
-- `bin/` (repo root) holds server scripts: `setup.sh` (one-time: bun, node, pm2, serve, Docker), `deploy.sh` (git reset to `origin/<branch>`, `bun install --frozen-lockfile`, `bun run build`, `pm2 startOrReload ecosystem.config.js`), `sync.sh` (rsync alternative to git), `update-deps.sh`
+- `bin/` (repo root) holds server scripts: `setup.sh` (one-time: bun, node, pm2, serve, Docker), `deploy.sh` (git reset to `origin/<branch>`, `bun install --frozen-lockfile`, `bun run build`, `pm2 startOrReload ecosystem.config.js`), `sync.sh` (rsync alternative to git), `update-deps.sh`, `link-skills.sh` (symlinks every `.agents/skills/<name>` into `.claude/skills/`, prunes broken links; run via `bun run skills:link`, also run by `bun run claude`)
 - `ecosystem.config.js` runs `app-backend` (bun, `backend/dist/main.js`, env from `backend/.env`) and `app-frontend` (`serve` of `frontend/dist` on :8080, SPA mode). The frontend calls `/api`, so the reverse proxy must map `/api` to the backend port with the prefix stripped (as Vite does in dev)
 
 ## Agent skills

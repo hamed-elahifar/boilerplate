@@ -22,6 +22,8 @@
     "claude": "bun run skills:link && claude --setting-sources project,local",
     "skills:link": "bin/link-skills.sh",
     "codebase-memory:install": "curl -fsSL https://raw.githubusercontent.com/DeusData/codebase-memory-mcp/main/install.sh | bash",
-    "codebase-memory:ui": "codebase-memory-mcp --ui=true --port=9749"
+    "codebase-memory:ui": "codebase-memory-mcp --ui=true --port=9749",
+    "ponytail:claude": "claude plugin marketplace add DietrichGebert/ponytail && claude plugin install ponytail@ponytail",
+    "ponytail:codex": "codex plugin marketplace add DietrichGebert/ponytail && codex plugin add ponytail@ponytail"
   }
 }

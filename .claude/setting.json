@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "deny": [
+      "NotebookEdit",
+      "DesignSync",
+      "EnterPlanMode",
+      "ExitPlanMode",
+      "PushNotification",
+      "RemoteTrigger",
+      "ReportFindings",
+      "AskUserQuestion"
+    ]
+  },
+  "disableClaudeAiConnectors": true,
+  "disableBundledSkills": true
+}

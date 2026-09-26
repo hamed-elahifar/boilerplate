@@ -18,6 +18,7 @@
     "start": "pm2 start ecosystem.config.js",
     "stop": "pm2 stop ecosystem.config.js",
     "lint": "bun run --cwd backend lint && bun run --cwd frontend lint",
-    "test": "bun run --cwd backend test && bun run --cwd frontend test"
+    "test": "bun run --cwd backend test && bun run --cwd frontend test",
+    "claude": "claude --setting-sources project,local"
   }
 }

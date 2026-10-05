@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "1db921de-a5f8-4684-8071-71659e80e3d0",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "/home/hamed/Dropbox/boilerplate/.archify/architecture-boilerplate-20261005-093000/candidate.json",
+  "output": "/home/hamed/Dropbox/boilerplate/.archify/architecture-boilerplate-20261005-093000/boilerplate.html",
+  "specification": {
+    "sha256": "d0da4d375aeaef68e640d7efb3e7d170b8530333dbb10b40d375e38de547a9fc",
+    "bytes": 3366
+  },
+  "artifact": {
+    "sha256": "17a00c48b768c43e9c68c3ed31304018567e073ad0e798fb7c2dfe27430d034f",
+    "bytes": 758638
+  }
+}

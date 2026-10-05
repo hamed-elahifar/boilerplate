@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Boilerplate Architecture",
+    "output": ".archify/architecture-boilerplate-20261005-093000/boilerplate.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "git@github.com:hamed-elahifar/boilerplate.git",
+      "link_mode": "local-only",
+      "revision": "ba3ef5de033f4df1b854c170902a01222b2e0569"
+    }
+  },
+  "components": [
+    { "id": "user", "type": "external", "label": "User", "sublabel": "Browser", "pos": [40, 200], "size": [120, 60] },
+    { "id": "spa", "type": "frontend", "label": "Vue 3 SPA", "sublabel": "router + lib/api.ts", "pos": [290, 200], "size": [150, 60], "tag": "JWT in localStorage",
+      "sources": [{ "path": "frontend/src/router.ts", "line": 1, "end_line": 28 }, { "path": "ecosystem.config.js", "line": 25, "end_line": 36 }] },
+    { "id": "guards", "type": "security", "label": "Global guards", "sublabel": "Throttler, JWT, Roles", "pos": [580, 200], "size": [160, 60], "tag": "100 req/min",
+      "sources": [{ "path": "backend/src/app.module.ts", "line": 76, "end_line": 88 }] },
+    { "id": "modules", "type": "backend", "label": "Auth + Users", "sublabel": "NestJS, generic base layers", "pos": [880, 200], "size": [170, 60],
+      "sources": [{ "path": "backend/src/app.module.ts", "line": 70, "end_line": 74 }, { "path": "backend/src/modules/users/users.repository.ts", "line": 5, "end_line": 8 }] },
+    { "id": "mongo", "type": "database", "label": "MongoDB", "sublabel": "via Mongoose", "pos": [1190, 200], "size": [130, 60],
+      "sources": [{ "path": "backend/src/app.module.ts", "line": 40, "end_line": 47 }] },
+    { "id": "redis", "type": "database", "label": "Redis", "sublabel": "optional, REDIS_URL", "pos": [590, 40], "size": [140, 60],
+      "sources": [{ "path": "backend/src/app.module.ts", "line": 74, "end_line": 83 }] },
+    { "id": "integ", "type": "cloud", "label": "Optional integrations", "sublabel": "Telegram, S3, SMS, Push", "pos": [880, 350], "size": [170, 60],
+      "sources": [{ "path": "backend/src/app.module.ts", "line": 66, "end_line": 72 }] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "PM2 app-frontend: serve :8080", "wraps": ["spa"] },
+    { "kind": "region", "label": "PM2 app-backend: bun dist/main.js", "wraps": ["guards", "modules", "integ"] }
+  ],
+  "connections": [
+    { "id": "user-spa", "from": "user", "to": "spa", "label": "HTTPS", "variant": "emphasis" },
+    { "id": "spa-guards", "from": "spa", "to": "guards", "label": "/api REST + Bearer", "variant": "emphasis" },
+    { "id": "guards-modules", "from": "guards", "to": "modules", "label": "allowed" },
+    { "id": "modules-mongo", "from": "modules", "to": "mongo", "label": "Mongoose" },
+    { "id": "guards-redis", "from": "guards", "to": "redis", "label": "rate-limit store", "variant": "dashed", "fromSide": "top", "toSide": "bottom" },
+    { "id": "modules-integ", "from": "modules", "to": "integ", "label": "no-op if unset", "variant": "dashed", "fromSide": "bottom", "toSide": "top" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Frontend", "items": ["Vite dev proxy maps /api to :3003, prefix stripped", "Any 401 redirects to /login"] },
+    { "dot": "emerald", "title": "Backend", "items": ["Guards, interceptor, filter, pipes registered in AppModule", "i18n language per request"] }
+  ]
+}

@@ -15,7 +15,7 @@ Starting point for new applications: a NestJS + MongoDB REST API and a Vue 3 fro
 | Tests    | Jest + supertest e2e against a real MongoDB                                                  |
 | Deploy   | PM2 (`ecosystem.config.js`, `bin/deploy.sh`) or Docker (`backend/Dockerfile`, `backend/docker-compose.yml`)   |
 
-Not included on purpose (add when needed): GraphQL, Redis/cache, websockets, file storage, SMS/push.
+Optional integrations (Telegram, Redis, S3, SMS, Pusher) ship in `modules/common` and no-op until their env vars are set; see [ADR 0003](./backend/docs/adr/0003-optional-integrations.md). Not included on purpose: GraphQL, websockets.
 
 ## Start
 
@@ -37,7 +37,7 @@ E2E tests need `backend/.env.test` (gitignored). Copy `env.example`, set `NODE_E
 
 ## Environment (`backend/.env`)
 
-`NODE_ENV` (`development|production|test`), `PORT`, `MONGO_URL`, `MONGO_DEBUG`, `JWT_SECRET`, `JWT_AUDIENCE`, `JWT_ISSUER`, `JWT_EXPIRES_IN`, and optional `DEFAULT_LANGUAGE` (`fa|en`, default `fa`). Validated at boot in `backend/src/modules/common/validators/env.validation.ts`, so add new variables there.
+`NODE_ENV` (`development|production|test`), `PORT`, `MONGO_URL`, `MONGO_DEBUG`, `JWT_SECRET`, `JWT_AUDIENCE`, `JWT_ISSUER`, `JWT_EXPIRES_IN`, and optional `DEFAULT_LANGUAGE` (`fa|en`, default `fa`). Integration variables (`REDIS_URL`, `TELEGRAM_*`, `S3_*`, `SMS_*`, `PUSHER_*`) are commented in `env.example`; leave them unset to disable. Validated at boot in `backend/src/modules/common/validators/env.validation.ts`, so add new variables there.
 
 ## Backend layout (`backend/src`)
 
@@ -51,6 +51,7 @@ modules/
   common/
     generic/             BaseController(), BaseService, BaseRepository  <- the reusable core
     filters/ interceptors/ validators/ dto/ logger/ utils/
+    telegram/ redis/ s3/ sms/ push/   optional integrations
 ```
 
 ### Behaviour every module inherits
@@ -77,7 +78,7 @@ The generic controller gives you `POST /`, `GET /` (`?limit&offset&projection`),
 
 ## Frontend layout (`frontend/src`)
 
-`lib/api.ts` (the only fetch wrapper: adds the bearer token, unwraps `data`, redirects to `/login` on 401), `composables/useAuth.ts`, `router.ts` (guards on token), `views/` (Login, DashboardLayout, Dashboard, Users, Settings), `components/ui/` (shadcn-vue: add more with `bunx shadcn-vue add <name>`). UI text is Persian and RTL. See [frontend/docs/adr/0001-frontend-stack.md](./frontend/docs/adr/0001-frontend-stack.md).
+`lib/api.ts` (the only fetch wrapper: adds the bearer token, unwraps `data`, redirects to `/login` on 401), `composables/useAuth.ts`, `router.ts` (guards on token), `views/` (Login, DashboardLayout, Dashboard, Users, Settings), `components/ui/` (shadcn-vue: add more with `bunx shadcn-vue add <name>`). UI text is Persian and RTL. Theme and dark mode are picked on the Settings page; add themes in `assets/themes.css` and `composables/useTheme.ts`. See [frontend/docs/adr/0001-frontend-stack.md](./frontend/docs/adr/0001-frontend-stack.md).
 
 To add a page: create `views/XView.vue`, add a route in `router.ts` and a nav entry in `DashboardLayout.vue`.
 
@@ -88,6 +89,10 @@ To add a page: create `views/XView.vue`, add a route in `router.ts` and a nav en
 - `seed-admin.ts` creates a known admin password. Development only.
 - `cors: true` allows all origins. Restrict it.
 - Pre-existing lint errors remain in `auth.module.ts` (`StringValue`), `logger.service.ts` and `numeric-string.validator.ts`.
+
+## Agent tooling
+
+`bun run claude` links the skills in `.agents/skills/` into `.claude/skills/` and starts Claude Code. `bun run skills:update` refreshes them. Project rules for agents live in [AGENTS.md](./AGENTS.md).
 
 ## Starting a new project from this
 

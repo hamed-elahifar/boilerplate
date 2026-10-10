@@ -81,14 +81,10 @@ When the user requests a durable behavior change, record it here or in the relev
 
 ## Backend Contracts
 
-- `backend/src/modules/structure` (Companies, Organization Units) is served over GraphQL only; it has no REST controller and there is no OData tier. Staff and Job stay on REST. See `backend/docs/adr/0002-graphql-replaces-odata-and-rest-for-structure.md`
-- GraphQL is code-first with an in-memory schema; new collections extend the generic resolver in `backend/src/modules/common/generic/base.resolver.ts`, mirroring the generic REST controller. Fields are published opt-in, one `@Field` at a time
-- Company and Organization Unit are separate collections. A Holding is a Company with `isHolding` set (`backend/docs/adr/0001-holding-is-a-flagged-company.md`)
-- Reference naming: `parentId` names the parent in the same collection; `companyId` names the owning Company and is carried directly on every record that belongs to one
-- Guards, response interceptor, exception filter, and validation pipes are registered as providers in `backend/src/app.module.ts`, not in `main.ts`, and are transport-aware (HTTP and GraphQL)
-- The generic REST controller exposes an id-scoped `DELETE /:id` (`deleteById`, never `deleteMany`); the generic GraphQL resolver still has no delete. A Staff member's Organization Unit (and derived `companyId`) is optional
+- Backend is REST only (NestJS + MongoDB); `users` and `auth` are the feature modules, new collections extend the generic controller/service/repository in `backend/src/modules/common/generic/`
+- Guards, response interceptor, exception filter, and validation pipes are registered as providers in `backend/src/app.module.ts`, not in `main.ts`
+- The generic REST controller exposes an id-scoped `DELETE /:id` (`deleteById`, never `deleteMany`)
 - `NODE_ENV` is one of `development`, `production` or `test`; the env validator rejects anything else. Production gating uses `isProduction()` (`backend/src/modules/common/utils/is-production.ts`)
-
 - External integrations (Telegram, Redis, S3, SMS, Pusher) are optional and no-op when their env vars are unset; see `backend/docs/adr/0003-optional-integrations.md` and `backend/src/modules/common/AGENTS.md`
 
 ## Frontend Contracts

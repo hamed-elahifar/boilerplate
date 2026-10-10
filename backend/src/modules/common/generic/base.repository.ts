@@ -1,9 +1,15 @@
-import { Document, FilterQuery, Model, Query, UpdateQuery } from 'mongoose';
-import { MongoError } from 'mongodb';
+import {
+  Document,
+  FilterQuery,
+  Model,
+  Query,
+  UpdateQuery,
+  mongo,
+} from 'mongoose';
 import { ConflictException } from '@nestjs/common';
 import { t } from '../utils/i18n';
 
-interface MongoErrorWithKeyPattern extends MongoError {
+interface MongoErrorWithKeyPattern extends mongo.MongoError {
   keyPattern: Record<string, number>;
   keyValue: Record<string, any>;
 }
@@ -16,7 +22,7 @@ export abstract class BaseRepository<T extends Document> {
       const entity = new this.entityModel(createEntityData) as T;
       return await entity.save();
     } catch (error) {
-      if (error instanceof MongoError && error.code === 11000) {
+      if (error instanceof mongo.MongoError && error.code === 11000) {
         const mongoError = error as MongoErrorWithKeyPattern;
         const field = Object.keys(mongoError.keyPattern)[0];
         const value: string = Object.values(mongoError.keyValue)[0] as string;

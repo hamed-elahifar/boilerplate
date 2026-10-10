@@ -9,8 +9,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { MongoError } from 'mongodb';
-import { Error as MongooseError } from 'mongoose';
+import { Error as MongooseError, mongo } from 'mongoose';
 import {
   I18nContext,
   I18nValidationError,
@@ -75,7 +74,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
             : exception.message;
         error = exception.name;
       }
-    } else if (exception instanceof MongoError) {
+    } else if (exception instanceof mongo.MongoError) {
       status = HttpStatus.BAD_REQUEST;
       error = 'Database Error';
 
@@ -101,7 +100,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     // Unexpected errors keep their raw text in the log only, never in the response.
     const ours =
       exception instanceof HttpException ||
-      exception instanceof MongoError ||
+      exception instanceof mongo.MongoError ||
       exception instanceof I18nValidationException;
     const localize = (m: string) =>
       ours && m && !NEST_DEFAULT.test(m)

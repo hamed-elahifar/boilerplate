@@ -79,8 +79,14 @@ Default section order:
 
 When the user requests a durable behavior change, record it here or in the relevant child AGENTS.md
 
+## User Preferences (Standing)
+
+- Write reports and summaries to the user in Persian (فارسی); keep code, identifiers, commands, and file paths in English
+
 ## Backend Contracts
 
+- Layering, as in `modules/users`: the controller only routes (decorators, params, DTOs) and calls the service; the service holds the logic and extends `BaseService`; the repository extends `BaseRepository` and is the only place that touches Mongoose models. `auth` follows the same trio
+- DTOs live in each module's `dto/` folder, one class per `<name>.dto.ts` file, re-exported from `dto/index.ts`; controllers and services import from the barrel (`./dto`). Shared ones are in `modules/common/dto`
 - Backend is REST only (NestJS + MongoDB); `users` and `auth` are the feature modules, new collections extend the generic controller/service/repository in `backend/src/modules/common/generic/`
 - Guards, response interceptor, exception filter, and validation pipes are registered as providers in `backend/src/app.module.ts`, not in `main.ts`
 - The generic REST controller exposes an id-scoped `DELETE /:id` (`deleteById`, never `deleteMany`)

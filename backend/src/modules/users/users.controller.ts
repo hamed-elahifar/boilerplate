@@ -4,8 +4,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { AuthDocument, AuthEntity } from '../auth/auth.model';
 import { RolesEnum } from '../auth/enums/roles.enum';
 import { BaseController } from '../common/generic/base.controller';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
 import { UsersService } from './users.service';
 
 @ApiTags('users')

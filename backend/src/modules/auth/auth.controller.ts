@@ -7,8 +7,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LogInDto } from './dto/login.dto';
-import { SignUpDto } from './dto/sign-up.dto';
+import { LogInDto, SignUpDto } from './dto';
 import { GetJwt } from './decorators/jwt.decorator';
 import type { JwtPayload } from './interfaces/jwt-payload.interface';
 import { Throttle } from '@nestjs/throttler';

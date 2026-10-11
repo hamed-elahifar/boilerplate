@@ -17,6 +17,7 @@ Owns everything under `common/`. Feature modules (`auth`, `users`) consume it; n
   - `s3/`: `S3Service` (S3-compatible, path-style) and `POST /upload?folder=` (JWT-guarded, folder whitelist in `upload.controller.ts`, size `S3_MAX_FILE_MB`, types `S3_ALLOWED_MIME`)
   - `sms/`: `SmsService.sendVerify` over an `SmsDriver`; drivers `console` (default) and `smsir` (`SMS_DRIVER=smsir`, production only)
   - `push/`: `PusherService` trigger helpers only; no controller, no auth endpoint
+- `generic/base.repository.ts` owns the shared query helpers: `findById` (null on a malformed id), `page` (`{items, total}`), `count`, `exists`, `existsById`. Repositories add only module-specific queries
 - Rate limiting: global `ThrottlerGuard` (100 req/min per IP, skipped when `NODE_ENV=test`); `POST /auth/sign-in` is limited to 10/min
 - `middleware/http-logger.middleware.ts` is attached in `main.ts` (skipped in test); guards, filter, interceptor and pipes stay in `app.module.ts`
 - Language resolution order: `?lang=`, `x-lang` header, body `language`, `Accept-Language`

@@ -4,25 +4,22 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
-import { Model } from 'mongoose';
 import { t } from '../common/utils/i18n';
-import { AuthDocument, AuthEntity } from './auth.model';
-import { LogInDto } from './dto/login.dto';
-import { SignUpDto } from './dto/sign-up.dto';
+import { AuthDocument } from './auth.model';
+import { AuthRepository } from './auth.repository';
+import { LogInDto, SignUpDto } from './dto';
 import type { JwtPayload } from './interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(AuthEntity.name)
-    private readonly authModel: Model<AuthDocument>,
+    private readonly repository: AuthRepository,
     private readonly jwtService: JwtService,
   ) {}
 
   async signUp(dto: SignUpDto): Promise<string> {
-    const taken = await this.authModel.exists({
+    const taken = await this.repository.exists({
       $or: [
         { username: dto.username.toLowerCase() },
         ...(dto.phone ? [{ phone: dto.phone }] : []),
@@ -30,7 +27,7 @@ export class AuthService {
     });
     if (taken) throw new ConflictException(t('errors.userExists'));
 
-    await this.authModel.create({
+    await this.repository.create({
       username: dto.username,
       phone: dto.phone,
       password: await bcrypt.hash(dto.password, 10),
@@ -42,18 +39,13 @@ export class AuthService {
     username,
     password,
   }: LogInDto): Promise<{ accessToken: string }> {
-    const user = await this.authModel
-      .findOne({ username: username.toLowerCase() })
-      .select('+password');
+    const user = await this.repository.withPassword(username.toLowerCase());
 
     if (!user?.isActive || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException(t('errors.invalidCredentials'));
     }
 
-    await this.authModel.updateOne(
-      { _id: user._id },
-      { lastLoginAt: new Date() },
-    );
+    await this.repository.touchLogin(user._id);
     const payload: JwtPayload = {
       userID: String(user._id),
       username: user.username,
@@ -63,6 +55,6 @@ export class AuthService {
   }
 
   me(userID: string): Promise<AuthDocument | null> {
-    return this.authModel.findById(userID).exec();
+    return this.repository.findById(userID);
   }
 }

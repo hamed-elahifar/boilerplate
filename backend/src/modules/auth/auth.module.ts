@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { AuthRepository } from './auth.repository';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -52,7 +53,7 @@ const normalizeJwtExpiresIn = (
       }),
     }),
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, AuthRepository, JwtStrategy],
   controllers: [AuthController],
   exports: [AuthService, PassportModule, JwtModule, MongooseModule],
 })

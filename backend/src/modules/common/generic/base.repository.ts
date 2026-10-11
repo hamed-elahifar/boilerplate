@@ -1,6 +1,7 @@
 import {
   Document,
   FilterQuery,
+  isValidObjectId,
   Model,
   Query,
   UpdateQuery,
@@ -70,6 +71,38 @@ export abstract class BaseRepository<T extends Document> {
     }
 
     return query.exec();
+  }
+
+  /** `null` for a malformed id instead of a CastError. */
+  async findById(id: string): Promise<T | null> {
+    return isValidObjectId(id) ? this.entityModel.findById(id).exec() : null;
+  }
+
+  async page(
+    filter: FilterQuery<T>,
+    sort: Record<string, 1 | -1>,
+    offset: number,
+    limit: number,
+  ) {
+    const [items, total] = await Promise.all([
+      this.entityModel.find(filter).sort(sort).skip(offset).limit(limit),
+      this.entityModel.countDocuments(filter),
+    ]);
+    return { items, total };
+  }
+
+  count(filter: FilterQuery<T> = {}) {
+    return this.entityModel.countDocuments(filter);
+  }
+
+  async exists(filter: FilterQuery<T>): Promise<boolean> {
+    return !!(await this.entityModel.exists(filter));
+  }
+
+  async existsById(id: string) {
+    return (
+      isValidObjectId(id) && !!(await this.entityModel.exists({ _id: id }))
+    );
   }
 
   async update(

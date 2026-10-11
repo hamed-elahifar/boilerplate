@@ -184,7 +184,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
             property: error.property,
             value: error.value as unknown,
             target: error.target as unknown,
-            contexts: error.contexts as unknown,
+            contexts: error.contexts,
             ...(parsedArgs ? parsedArgs.args : {}),
             constraints: constraintsArgs,
           };

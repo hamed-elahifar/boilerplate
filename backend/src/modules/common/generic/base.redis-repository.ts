@@ -8,7 +8,9 @@ import { Redis } from 'ioredis';
  */
 export abstract class BaseRedisRepository<T extends object> {
   protected readonly logger = new Logger(this.constructor.name);
+
   protected readonly ttl: number;
+
   private readonly client: Redis;
 
   constructor(

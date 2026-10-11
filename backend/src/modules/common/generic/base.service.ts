@@ -68,7 +68,7 @@ export abstract class BaseService<
     }
 
     const entity = await this.repository.update(
-      { _id: id } as FilterQuery<T>,
+      { _id: id },
       updateDto as Record<string, any>,
     );
 

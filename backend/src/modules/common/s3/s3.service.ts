@@ -19,8 +19,11 @@ import { extname } from 'path';
 @Injectable()
 export class S3Service {
   private readonly logger = new Logger(S3Service.name);
+
   private readonly client: S3Client | null = null;
+
   private readonly bucket: string;
+
   private readonly endpoint: string;
 
   constructor(config: ConfigService) {

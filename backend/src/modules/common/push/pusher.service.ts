@@ -9,6 +9,7 @@ import Pusher from 'pusher';
 @Injectable()
 export class PusherService {
   private readonly logger = new Logger(PusherService.name);
+
   private readonly pusher: Pusher | null;
 
   constructor(config: ConfigService) {

@@ -7,6 +7,7 @@ import { TelegramService } from '../telegram/telegram.service';
 @Injectable({ scope: Scope.TRANSIENT })
 export class CustomLogger implements LoggerService {
   private logger: winston.Logger;
+
   private context?: string;
 
   constructor(

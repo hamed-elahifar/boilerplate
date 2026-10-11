@@ -10,7 +10,7 @@ describe('TelegramService', () => {
   const fetchMock = jest.fn().mockResolvedValue({ ok: true });
   beforeEach(() => {
     fetchMock.mockClear();
-    global.fetch = fetchMock as unknown as typeof fetch;
+    global.fetch = fetchMock;
   });
 
   it('is a no-op when unconfigured', async () => {

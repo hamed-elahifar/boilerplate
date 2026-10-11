@@ -17,9 +17,13 @@ export class TelegramService
   implements OnApplicationBootstrap, OnApplicationShutdown
 {
   private readonly logger = new Logger(TelegramService.name);
+
   private readonly token: string;
+
   private readonly chatId: string;
+
   private readonly baseUrl: string;
+
   private readonly lastSent = new Map<string, number>();
 
   constructor(config: ConfigService) {

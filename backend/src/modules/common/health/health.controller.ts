@@ -13,7 +13,7 @@ export class HealthController {
   @Get()
   check(): { status: 'ok' } {
     // readyState 1 = connected
-    if (this.connection.readyState !== 1) {
+    if (Number(this.connection.readyState) !== 1) {
       throw new ServiceUnavailableException('database is not connected');
     }
     return { status: 'ok' };

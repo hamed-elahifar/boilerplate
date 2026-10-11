@@ -6,7 +6,7 @@ import {
 
 @ValidatorConstraint({ name: 'string-or-number', async: false })
 export class IsNumericString implements ValidatorConstraintInterface {
-  validate(value: any, args: ValidationArguments) {
+  validate(value: any) {
     return typeof value === 'string' && /^[0-9]+$/.test(value);
   }
 

@@ -29,7 +29,7 @@ export class CustomLogger implements LoggerService {
             winston.format.colorize(),
             winston.format.printf(
               ({ context, level, message, timestamp, ...meta }) => {
-                return `${timestamp} [${context}] ${level}: ${message} ${
+                return `${String(timestamp)} [${String(context)}] ${level}: ${String(message)} ${
                   Object.keys(meta).length ? JSON.stringify(meta, null, 2) : ''
                 }`;
               },

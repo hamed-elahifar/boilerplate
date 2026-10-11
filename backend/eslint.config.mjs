@@ -29,8 +29,15 @@ export default tseslint.config(
   {
     plugins: { 'decorator-position': decoratorPosition },
     rules: {
-      'decorator-position/decorator-position': ['error', { properties: 'above' }],
-      'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: false }],
+      'decorator-position/decorator-position': [
+        'error',
+        { properties: 'above' },
+      ],
+      'lines-between-class-members': [
+        'error',
+        'always',
+        { exceptAfterSingleLine: false },
+      ],
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',

@@ -47,6 +47,10 @@ class EnvironmentVariables {
   @IsString()
   JWT_EXPIRES_IN: string;
 
+  @IsOptional()
+  @IsString()
+  CORS_ORIGIN?: string;
+
   // OPTIONAL INTEGRATIONS: each is off unless its vars are set
   @IsOptional()
   @IsString()

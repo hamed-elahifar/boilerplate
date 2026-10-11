@@ -58,4 +58,16 @@ describe('Auth (e2e)', () => {
       .expect(401);
     await http().get('/auth/me').expect(401);
   });
+
+  it('rejects a malformed username on sign-up', async () => {
+    await http()
+      .post('/auth/sign-up')
+      .send({ username: 'a b', password: user.password })
+      .expect(400);
+  });
+
+  it('answers GET /health without authentication', async () => {
+    const res = await http().get('/health').expect(200);
+    expect(res.body.data).toEqual({ status: 'ok' });
+  });
 });

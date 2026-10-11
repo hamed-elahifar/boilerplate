@@ -27,6 +27,8 @@ import {
   I18nValidationPipe,
   QueryResolver,
 } from 'nestjs-i18n';
+import { HealthController } from './modules/common/health/health.controller';
+import { isProduction } from './modules/common/utils/is-production';
 import { UsersModule } from './modules/users/users.module';
 
 const validationOptions = {
@@ -61,7 +63,7 @@ const validationOptions = {
         fallbackLanguage: config.get<string>('DEFAULT_LANGUAGE', 'fa'),
         loaderOptions: {
           path: join(__dirname, '/i18n/'),
-          watch: true,
+          watch: !isProduction(),
         },
       }),
       resolvers: [
@@ -90,7 +92,7 @@ const validationOptions = {
     LoggerModule,
     UsersModule,
   ],
-  controllers: [],
+  controllers: [HealthController],
   // Every cross-cutting concern is registered here rather than during bootstrap,
   // so the test harness exercises the same stack the running application does.
   providers: [

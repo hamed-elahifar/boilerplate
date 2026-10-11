@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { matchesSignature } from './file-signature';
 import { S3Service } from './s3.service';
 
 const FOLDERS = ['images', 'documents', 'misc'];
@@ -43,6 +44,9 @@ export class UploadController {
     }
     if (!this.allowedMime.includes(file.mimetype)) {
       throw new BadRequestException(`${file.mimetype} is not allowed`);
+    }
+    if (!matchesSignature(file.mimetype, file.buffer)) {
+      throw new BadRequestException('file content does not match its type');
     }
     const key = await this.s3.upload(file, folder);
     return { key, url: this.s3.url(key) };

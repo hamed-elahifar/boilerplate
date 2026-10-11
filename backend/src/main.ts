@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from 'compression';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { createHttpLoggerMiddleware } from './modules/common/middleware/http-logger.middleware';
 import { isProduction } from './modules/common/utils/is-production';
@@ -12,9 +13,13 @@ import 'reflect-metadata';
 async function bootstrap() {
   const logger = new Logger('Main');
 
+  // CORS_ORIGIN: comma-separated allow-list; unset allows every origin.
+  const origins = process.env.CORS_ORIGIN?.split(',').map((o) => o.trim());
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    cors: true, // Enable CORS for all origins
+    cors: origins ? { origin: origins } : true,
   });
+  // CSP off outside production so the Swagger UI's inline scripts still load.
+  app.use(helmet({ contentSecurityPolicy: isProduction() }));
   app.set('trust proxy', 1);
   app.use(compression());
   if (process.env.NODE_ENV !== 'test') app.use(createHttpLoggerMiddleware());

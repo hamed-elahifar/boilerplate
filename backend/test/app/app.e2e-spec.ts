@@ -58,7 +58,7 @@ describe('Application stack (e2e)', () => {
     const res = await request(app.getHttpServer())
       .post('/auth/sign-up')
       .set('Accept-Language', 'en')
-      .send({ username: 'x', password: 'short', phone: 'nope' })
+      .send({ username: 'valid-name', password: 'short', phone: 'nope' })
       .expect(400);
 
     expect(res.body).toMatchObject({

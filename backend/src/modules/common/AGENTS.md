@@ -14,11 +14,13 @@ Owns everything under `common/`. Feature modules (`auth`, `users`) consume it; n
 - Integrations are `@Global()` modules registered in `app.module.ts`:
   - `telegram/`: `TelegramService` (`sendMessage`, error/warning helpers, startup/shutdown pings). `TELEGRAM_API_BASE_URL` defaults to the official API. Error/warning alerts are de-duplicated for 60 s in memory. `CustomLogger.error` forwards to it; the service must not log through `CustomLogger.error` (would loop)
   - `redis/`: `REDIS_CLIENT` token, `null` without `REDIS_URL`. Throttler storage switches to Redis when present. Entity caches extend `generic/base.redis-repository.ts`
-  - `s3/`: `S3Service` (S3-compatible, path-style) and `POST /upload?folder=` (JWT-guarded, folder whitelist in `upload.controller.ts`, size `S3_MAX_FILE_MB`, types `S3_ALLOWED_MIME`)
+  - `s3/`: `S3Service` (S3-compatible, path-style) and `POST /upload?folder=` (JWT-guarded, folder whitelist in `upload.controller.ts`, size `S3_MAX_FILE_MB`, types `S3_ALLOWED_MIME`, magic bytes checked by `file-signature.ts`)
   - `sms/`: `SmsService.sendVerify` over an `SmsDriver`; drivers `console` (default) and `smsir` (`SMS_DRIVER=smsir`, production only)
   - `push/`: `PusherService` trigger helpers only; no controller, no auth endpoint
 - `generic/base.repository.ts` owns the shared query helpers: `findById` (null on a malformed id), `page` (`{items, total}`), `count`, `exists`, `existsById`. Repositories add only module-specific queries
-- Rate limiting: global `ThrottlerGuard` (100 req/min per IP, skipped when `NODE_ENV=test`); `POST /auth/sign-in` is limited to 10/min
+- `health/`: public `GET /health` (503 when Mongo is disconnected), for pm2/reverse-proxy checks
+- `main.ts` applies `helmet` (CSP only in production) and CORS from optional `CORS_ORIGIN` (comma-separated; unset allows all)
+- Rate limiting: global `ThrottlerGuard` (100 req/min per IP, skipped when `NODE_ENV=test`); `POST /auth/sign-in` is limited to 10/min and `POST /auth/sign-up` to 5/min
 - `middleware/http-logger.middleware.ts` is attached in `main.ts` (skipped in test); guards, filter, interceptor and pipes stay in `app.module.ts`
 - Language resolution order: `?lang=`, `x-lang` header, body `language`, `Accept-Language`
 

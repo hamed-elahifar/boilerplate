@@ -123,3 +123,11 @@ Multi-context: root `CONTEXT-MAP.md` points to `backend/CONTEXT.md` (and `fronte
 Partially indexed; add further children as folders become durable boundaries.
 
 - `backend/src/modules/common/AGENTS.md`: shared REST layers, logger, validators and optional integrations (Telegram, Redis, S3, SMS, Pusher, rate limiting)
+
+## Shell Workflow (agent environment)
+
+- Never run `cd <dir> && <cmd>` in the Bash tool: it hangs here. Use absolute paths, `git -C <repo> ...`, or a subshell `( cd <dir> ; <cmd> ) < /dev/null`
+- Always pass `< /dev/null` to git, jest and similar, and `--no-pager` to git; send long output to a file (e.g. `> ~/.claude/out.txt 2>&1`) and grep it instead of piping
+- Heredocs (`<<EOF`) and multi-line `git commit -m` also hang: write files with the Write/Edit tools and commit with `GIT_EDITOR=true git -C <repo> commit -q -F <message-file>`
+- `ls` is an alias for `eza` and rejects plain paths: use `command ls`
+- Run one jest process at a time (shared Mongo); `pkill -f jest` kills the agent's own shell, so do not use it

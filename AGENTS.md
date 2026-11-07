@@ -96,13 +96,13 @@ When the user requests a durable behavior change, record it here or in the relev
 ## Frontend Contracts
 
 - `frontend/` is Vue 3 + Vite + Tailwind v4 + shadcn-vue + vue-router only (no Pinia, no GraphQL client); see `frontend/docs/adr/0001-frontend-stack.md`
-- All backend traffic goes through `frontend/src/lib/api.ts` (base `/api`, proxied by Vite to `:3003`); auth is email + password only, the JWT lives in localStorage, and any 401 redirects to `/login`
+- All backend traffic goes through `frontend/src/lib/api.ts` (base `/api`, same origin); auth is email + password only, the JWT lives in localStorage, and any 401 redirects to `/login`
 - Themes: the default lives in `src/assets/main.css`; each extra theme is a `[data-theme]` block pair in `src/assets/themes.css` plus an entry in `src/composables/useTheme.ts`. Users pick theme and dark mode on the Settings page
 
 ## Deployment
 
-- `bin/` (repo root) holds server scripts: `setup.sh` (one-time: bun, node, pm2, serve, Docker), `deploy.sh` (git reset to `origin/<branch>`, `bun install --frozen-lockfile`, `bun run build`, `pm2 startOrReload ecosystem.config.js`), `sync.sh` (rsync alternative to git), `update-deps.sh`, `link-skills.sh` (symlinks every `.agents/skills/<name>` into `.claude/skills/`, prunes broken links; run via `bun run skills:link`, also run by `bun run claude`)
-- `ecosystem.config.js` runs `app-backend` (bun, `backend/dist/main.js`, env from `backend/.env`) and `app-frontend` (`serve` of `frontend/dist` on :8080, SPA mode). The frontend calls `/api`, so the reverse proxy must map `/api` to the backend port with the prefix stripped (as Vite does in dev)
+- `bin/` (repo root) holds server scripts: `setup.sh` (one-time: bun, node, pm2, Docker), `deploy.sh` (git reset to `origin/<branch>`, `bun install --frozen-lockfile`, `bun run build`, `pm2 delete` of the legacy `app-backend`/`app-frontend`, then `pm2 startOrReload ecosystem.config.js`), `sync.sh` (rsync alternative to git), `update-deps.sh`, `link-skills.sh` (symlinks every `.agents/skills/<name>` into `.claude/skills/`, prunes broken links; run via `bun run skills:link`, also run by `bun run claude`)
+- One process, one port, in every environment: `ecosystem.config.js` runs a single pm2 app `boilerplate` (`backend/dist/main.js`, env from `backend/.env`). The whole API sits under the Nest global prefix `/api` (`main.ts`; e2e tests build the app without it and use root paths) and `backend/src/modules/common/web/mount-frontend.ts` serves everything else: `frontend/dist` with an SPA fallback (a missing file with an extension is a 404), or, with `SERVE_VITE=1` (set by `bun run start:dev`), Vite in middleware mode inside the same process (HMR, one port, no proxy). No `serve`, no frontend process; the reverse proxy forwards everything unchanged to the backend port. With `VITE_API_URL`/`VITE_WS_URL` set the frontend talks to that absolute URL instead (native builds list their origins in `CORS_ORIGIN`)
 
 ## Agent skills
 

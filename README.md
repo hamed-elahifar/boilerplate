@@ -25,7 +25,7 @@ Requires Bun and a MongoDB (`docker run -d -p 27017:27017 mongo`).
 bun install
 cp backend/env.example backend/.env   # then set JWT_SECRET
 bun run --cwd backend seed            # creates admin / admin123 (dev only!)
-bun run start:dev                     # backend :3003, frontend :5173 (proxies /api -> backend)
+bun run start:dev                     # one process on :3003: API under /api, frontend via Vite (HMR)
 ```
 
 - Swagger: http://localhost:3003/api-doc (non-production only)
@@ -43,7 +43,7 @@ E2E tests need `backend/.env.test` (gitignored). Copy `env.example`, set `NODE_E
 
 ```
 app.module.ts            registers ALL cross-cutting concerns (guards, pipes, filter, interceptor)
-main.ts                  bootstrap only: CORS, compression, Swagger, /api prefix strip
+main.ts                  bootstrap only: CORS, compression, Swagger, /api prefix, frontend mount
 i18n/<lang>/*.json       translation resources (validation.json, errors.json)
 modules/
   auth/                  sign-up, sign-in, /auth/me; JWT strategy; guards; @Public, @Roles, @GetJwt

@@ -13,13 +13,5 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  server: {
-    // Same-origin in dev: /api/users -> http://localhost:3003/staff
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3003',
-        rewrite: (path) => path.replace(/^\/api/, ''),
-      },
-    },
-  },
+  // No dev server of its own: the backend runs Vite in-process (backend/src/modules/common/web).
 });

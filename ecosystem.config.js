@@ -1,7 +1,8 @@
 module.exports = {
   apps: [
     {
-      name: 'app-backend',
+      // One process: the API under /api and the built frontend (frontend/dist) on the same port
+      name: 'boilerplate',
       script: 'dist/main.js',
       cwd: './backend',
       interpreter: 'bun',
@@ -19,19 +20,6 @@ module.exports = {
       max_memory_restart: '512M',
       error_file: './backend/logs/pm2-error.log',
       out_file: './backend/logs/pm2-out.log',
-    },
-    {
-      name: 'app-frontend',
-      script: 'serve',
-      cwd: './',
-      env: {
-        PM2_SERVE_PATH: './frontend/dist',
-        PM2_SERVE_PORT: 8080,
-        PM2_SERVE_SPA: 'true',
-        PM2_SERVE_HOMEPAGE: '/index.html',
-      },
-      autorestart: false,
-      watch: false,
     },
   ],
 };

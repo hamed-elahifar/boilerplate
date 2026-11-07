@@ -8,6 +8,7 @@ import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { createHttpLoggerMiddleware } from './modules/common/middleware/http-logger.middleware';
 import { isProduction } from './modules/common/utils/is-production';
+import { mountFrontend } from './modules/common/web/mount-frontend';
 import 'reflect-metadata';
 
 async function bootstrap() {
@@ -28,13 +29,11 @@ async function bootstrap() {
   // The response interceptor, exception filter and validation pipes are declared
   // in AppModule so the test harness runs the same stack this bootstrap does.
 
-  if (!isProduction()) {
-    // The built frontend calls the API under /api (its dev proxy strips it); do the same here.
-    app.use((req: { url: string }, _res: unknown, next: () => void) => {
-      req.url = req.url.replace(/^\/api(?=\/|$)/, '');
-      next();
-    });
+  // The whole API lives under /api; everything else is the frontend (mountFrontend).
+  app.setGlobalPrefix('api');
+  await mountFrontend(app);
 
+  if (!isProduction()) {
     const config = new DocumentBuilder()
       .setTitle('API')
       .setDescription('API documentation')

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# deploy.sh — deploy backend + frontend (run on the server, from anywhere)
+# deploy.sh — deploy the app (one process serving API + frontend) (run on the server, from anywhere)
 # Usage: ./bin/deploy.sh [<branch>] [--force]
-# Requires: git, bun, pm2, serve (see bin/setup.sh) and backend/.env on the server.
+# Requires: git, bun, pm2 (see bin/setup.sh) and backend/.env on the server.
 
 set -u
 set -o pipefail
@@ -42,7 +42,7 @@ run() {
 cd "$PROJECT_DIR"
 log "Deploying $BRANCH from $PROJECT_DIR"
 
-for tool in git bun pm2 serve; do
+for tool in git bun pm2; do
   command -v "$tool" >/dev/null 2>&1 || { log "Missing required tool: $tool (run bin/setup.sh)"; exit 1; }
 done
 [ -f backend/.env ] || { log "Missing backend/.env (copy backend/env.example and fill it in)"; exit 1; }
@@ -64,6 +64,8 @@ fi
 run bun install --frozen-lockfile   # workspace root installs backend + frontend
 run bun run build                   # backend (nest) then frontend (vue-tsc + vite)
 
+# one-time migration: the app used to be two pm2 processes
+pm2 delete app-backend app-frontend >/dev/null 2>&1 || true
 run pm2 startOrReload ecosystem.config.js --update-env
 run pm2 save
 

@@ -10,6 +10,7 @@ Owns everything under `common/`. Feature modules (`auth`, `users`) consume it; n
 
 ## Local Contracts
 
+- `web/mount-frontend.ts`: called from `main.ts` before `app.init()`; serves the Vue app (`frontend/dist` + SPA fallback, or Vite middleware when `SERVE_VITE=1`) for every path outside the `/api` global prefix and `/api-doc`. The only place that knows where the frontend lives
 - Every integration is optional and env-driven; unset vars must never stop boot (`docs/adr/0003-optional-integrations.md`). All its vars are `@IsOptional()` in `validators/env.validation.ts` and commented in `backend/env.example`
 - Integrations are `@Global()` modules registered in `app.module.ts`:
   - `telegram/`: `TelegramService` (`sendMessage`, error/warning helpers, startup/shutdown pings). `TELEGRAM_API_BASE_URL` defaults to the official API. Error/warning alerts are de-duplicated for 60 s in memory. `CustomLogger.error` forwards to it; the service must not log through `CustomLogger.error` (would loop)

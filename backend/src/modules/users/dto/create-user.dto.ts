@@ -7,7 +7,7 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { RolesEnum } from '../../auth/enums/roles.enum';
+import { RolesEnum } from '../../auth/enums/roles.enum.js';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'john' })

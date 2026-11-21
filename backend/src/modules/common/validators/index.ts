@@ -1,2 +1,2 @@
-export * from './string-or-number.validator';
-export * from './numeric-string.validator';
+export * from './string-or-number.validator.js';
+export * from './numeric-string.validator.js';

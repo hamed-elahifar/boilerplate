@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Document, FilterQuery } from 'mongoose';
-import { BaseRepository } from './base.repository';
-import { PaginationQueryDto } from '../dto';
-import { Types } from 'mongoose';
-import { t } from '../utils/i18n';
+import mongoose from 'mongoose';
+import type { Document, QueryFilter } from 'mongoose';
+import { BaseRepository } from './base.repository.js';
+import { PaginationQueryDto } from '../dto/index.js';
+import { t } from '../utils/i18n.js';
 
 @Injectable()
 export abstract class BaseService<
@@ -21,7 +21,7 @@ export abstract class BaseService<
   }
 
   async findAll(
-    filter: FilterQuery<T>,
+    filter: QueryFilter<T>,
     projection?: string[] | string,
     paginationQueryDto?: PaginationQueryDto,
   ): Promise<T[]> {
@@ -39,7 +39,7 @@ export abstract class BaseService<
   }
 
   async findOne(
-    filter: FilterQuery<T>,
+    filter: QueryFilter<T>,
     projection?: string[] | string,
   ): Promise<T | null> {
     const normalizedProjection = this.normalizeProjection(projection);
@@ -47,7 +47,7 @@ export abstract class BaseService<
     return entity || null;
   }
 
-  async findOneSafe(filter: FilterQuery<T>, projection?: string[]): Promise<T> {
+  async findOneSafe(filter: QueryFilter<T>, projection?: string[]): Promise<T> {
     const normalizedProjection = this.normalizeProjection(projection);
     const entity = await this.repository.findOne(filter, normalizedProjection);
 
@@ -90,7 +90,7 @@ export abstract class BaseService<
   }
 
   protected isValidObjectId(id: string): boolean {
-    const ObjectId: typeof Types.ObjectId = Types.ObjectId;
+    const ObjectId: typeof mongoose.Types.ObjectId = mongoose.Types.ObjectId;
     return ObjectId.isValid(id);
   }
 

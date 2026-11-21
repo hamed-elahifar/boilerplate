@@ -5,10 +5,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from 'compression';
 import helmet from 'helmet';
-import { AppModule } from './app.module';
-import { createHttpLoggerMiddleware } from './modules/common/middleware/http-logger.middleware';
-import { isProduction } from './modules/common/utils/is-production';
-import { mountFrontend } from './modules/common/web/mount-frontend';
+import { AppModule } from './app.module.js';
+import { createHttpLoggerMiddleware } from './modules/common/middleware/http-logger.middleware.js';
+import { isProduction } from './modules/common/utils/is-production.js';
+import { mountFrontend } from './modules/common/web/mount-frontend.js';
 import 'reflect-metadata';
 
 async function bootstrap() {

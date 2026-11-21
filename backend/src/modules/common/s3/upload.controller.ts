@@ -8,8 +8,8 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { matchesSignature } from './file-signature';
-import { S3Service } from './s3.service';
+import { matchesSignature } from './file-signature.js';
+import { S3Service } from './s3.service.js';
 
 const FOLDERS = ['images', 'documents', 'misc'];
 

@@ -1,25 +1,29 @@
 import { Module, ValidationPipe } from '@nestjs/common';
-import { join } from 'path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { validate } from './modules/common/validators/env.validation';
+import { validate } from './modules/common/validators/env.validation.js';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AuthModule } from './modules/auth/auth.module';
+import { AuthModule } from './modules/auth/auth.module.js';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
-import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
-import { RolesGuard } from './modules/auth/guards/roles.guard';
-import { LoggerModule } from './modules/common/logger/logger.module';
-import { CustomLogger } from './modules/common/logger/logger.service';
-import { GlobalExceptionFilter } from './modules/common/filters';
-import { ResponseInterceptor } from './modules/common/interceptors';
+import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard.js';
+import { RolesGuard } from './modules/auth/guards/roles.guard.js';
+import { LoggerModule } from './modules/common/logger/logger.module.js';
+import { CustomLogger } from './modules/common/logger/logger.service.js';
+import { GlobalExceptionFilter } from './modules/common/filters/index.js';
+import { ResponseInterceptor } from './modules/common/interceptors/index.js';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
 import { Redis } from 'ioredis';
-import { TelegramModule } from './modules/common/telegram/telegram.module';
-import { REDIS_CLIENT, RedisModule } from './modules/common/redis/redis.module';
-import { S3Module } from './modules/common/s3/s3.module';
-import { SmsModule } from './modules/common/sms/sms.module';
-import { PushModule } from './modules/common/push/push.module';
-import { BodyLanguageResolver } from './modules/common/utils/body-language.resolver';
+import { TelegramModule } from './modules/common/telegram/telegram.module.js';
+import {
+  REDIS_CLIENT,
+  RedisModule,
+} from './modules/common/redis/redis.module.js';
+import { S3Module } from './modules/common/s3/s3.module.js';
+import { SmsModule } from './modules/common/sms/sms.module.js';
+import { PushModule } from './modules/common/push/push.module.js';
+import { BodyLanguageResolver } from './modules/common/utils/body-language.resolver.js';
 import {
   AcceptLanguageResolver,
   HeaderResolver,
@@ -27,9 +31,9 @@ import {
   I18nValidationPipe,
   QueryResolver,
 } from 'nestjs-i18n';
-import { HealthController } from './modules/common/health/health.controller';
-import { isProduction } from './modules/common/utils/is-production';
-import { UsersModule } from './modules/users/users.module';
+import { HealthController } from './modules/common/health/health.controller.js';
+import { isProduction } from './modules/common/utils/is-production.js';
+import { UsersModule } from './modules/users/users.module.js';
 
 const validationOptions = {
   whitelist: true,
@@ -58,11 +62,12 @@ const validationOptions = {
     // Language per request: `?lang=en`, else x-lang header, else body `language`, else Accept-Language, else DEFAULT_LANGUAGE.
     // Resources live in src/i18n/<lang>/*.json.
     I18nModule.forRootAsync({
+      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         fallbackLanguage: config.get<string>('DEFAULT_LANGUAGE', 'fa'),
         loaderOptions: {
-          path: join(__dirname, '/i18n/'),
+          path: join(dirname(fileURLToPath(import.meta.url)), '/i18n/'),
           watch: !isProduction(),
         },
       }),

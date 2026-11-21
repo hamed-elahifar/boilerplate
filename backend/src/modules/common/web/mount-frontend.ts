@@ -1,12 +1,16 @@
 import { existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { Logger } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import type { NextFunction, Request, RequestHandler, Response } from 'express';
 import { static as serveStatic } from 'express';
 
-const FRONTEND_DIR = resolve(__dirname, '../../../../../frontend');
+const FRONTEND_DIR = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  '../../../../../frontend',
+);
 
 /**
  * One process, one port: the API lives under the global `/api` prefix (set in main.ts),
@@ -32,8 +36,8 @@ async function createWebHandler(
 ): Promise<RequestHandler | undefined> {
   if (process.env.SERVE_VITE === '1') {
     // Resolved from the frontend's own node_modules (the backend does not depend on Vite);
-    // vite is ESM-only, which require() loads on Node >= 22.12.
-    const { createServer } = createRequire(`${FRONTEND_DIR}/`)('vite') as {
+    const vitePath = createRequire(`${FRONTEND_DIR}/`).resolve('vite');
+    const { createServer } = (await import(pathToFileURL(vitePath).href)) as {
       createServer: (
         config: object,
       ) => Promise<{ middlewares: RequestHandler }>;

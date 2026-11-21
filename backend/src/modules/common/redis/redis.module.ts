@@ -1,6 +1,6 @@
 import { Global, Inject, Module, OnApplicationShutdown } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import IORedis, { Redis } from 'ioredis';
+import { Redis } from 'ioredis';
 
 export const REDIS_CLIENT = 'REDIS_CLIENT';
 
@@ -13,7 +13,7 @@ export const REDIS_CLIENT = 'REDIS_CLIENT';
       inject: [ConfigService],
       useFactory: (config: ConfigService): Redis | null => {
         const url = config.get<string>('REDIS_URL');
-        return url ? new IORedis(url) : null;
+        return url ? new Redis(url) : null;
       },
     },
   ],

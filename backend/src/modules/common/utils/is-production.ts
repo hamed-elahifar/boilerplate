@@ -1,4 +1,4 @@
-import { Environment } from '../enums/environments.enum';
+import { Environment } from '../enums/environments.enum.js';
 
 /**
  * Whether the process is running in production. Gates the developer-facing

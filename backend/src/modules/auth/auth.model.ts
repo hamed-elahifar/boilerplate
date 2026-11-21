@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import { RolesEnum } from './enums/roles.enum';
+import mongoose from 'mongoose';
+import { RolesEnum } from './enums/roles.enum.js';
 
 /** The user record: what signs in, and what `/users` manages. */
 @Schema({
@@ -15,7 +15,7 @@ import { RolesEnum } from './enums/roles.enum';
     },
   },
 })
-export class AuthEntity extends Document {
+export class AuthEntity extends mongoose.Document {
   @Prop({ required: true, trim: true, lowercase: true, unique: true })
   username: string;
 

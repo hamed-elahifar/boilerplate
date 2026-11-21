@@ -72,7 +72,7 @@ Copy `modules/users/` as the template; it is the reference implementation.
 5. `products/products.controller.ts`: `extends BaseController<...>(ProductEntity, CreateDto, UpdateDto, 'Product')`, plus `@Controller('products')`, `@ApiTags`, and `@Roles(...)` if needed.
 6. `products/products.module.ts`: `MongooseModule.forFeature([{ name: ProductEntity.name, schema }])`, then list the controller and providers.
 7. Import the module in `app.module.ts`.
-8. Add `test/products/products.e2e-spec.ts` (copy `test/users/users.e2e-spec.ts`).
+8. Add `test/products/products.e2e.spec.ts` (copy `test/users/users.e2e.spec.ts`).
 
 The generic controller gives you `POST /`, `GET /` (`?limit&offset&projection`), `GET /:id`, `PATCH /:id`, `DELETE /:id` with Swagger docs. Add custom routes as normal Nest methods on the subclass.
 

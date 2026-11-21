@@ -1,11 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Roles } from '../auth/decorators/roles.decorator';
-import { AuthDocument, AuthEntity } from '../auth/auth.model';
-import { RolesEnum } from '../auth/enums/roles.enum';
-import { BaseController } from '../common/generic/base.controller';
-import { CreateUserDto, UpdateUserDto } from './dto';
-import { UsersService } from './users.service';
+import { Roles } from '../auth/decorators/roles.decorator.js';
+import { AuthDocument, AuthEntity } from '../auth/auth.model.js';
+import { RolesEnum } from '../auth/enums/roles.enum.js';
+import { BaseController } from '../common/generic/base.controller.js';
+import { CreateUserDto, UpdateUserDto } from './dto/index.js';
+import { UsersService } from './users.service.js';
 
 @ApiTags('users')
 @Roles(RolesEnum.ADMIN)

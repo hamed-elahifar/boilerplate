@@ -17,9 +17,9 @@ import {
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
-import { Document } from 'mongoose';
-import { BaseService } from './base.service';
-import { PaginationQueryDto } from '../dto';
+import type { Document } from 'mongoose';
+import { BaseService } from './base.service.js';
+import { PaginationQueryDto } from '../dto/index.js';
 
 export function BaseController<T extends Document, CreateDto, UpdateDto>(
   EntityClass: Type<T>,

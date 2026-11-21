@@ -2,7 +2,7 @@ import { Injectable, LoggerService, Optional, Scope } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as winston from 'winston';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
-import { TelegramService } from '../telegram/telegram.service';
+import { TelegramService } from '../telegram/telegram.service.js';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class CustomLogger implements LoggerService {

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcryptjs';
-import { AuthDocument } from '../auth/auth.model';
-import { BaseService } from '../common/generic/base.service';
-import { CreateUserDto, UpdateUserDto } from './dto';
-import { UsersRepository } from './users.repository';
+import bcrypt from 'bcryptjs';
+import { AuthDocument } from '../auth/auth.model.js';
+import { BaseService } from '../common/generic/base.service.js';
+import { CreateUserDto, UpdateUserDto } from './dto/index.js';
+import { UsersRepository } from './users.repository.js';
 
 @Injectable()
 export class UsersService extends BaseService<

@@ -6,13 +6,13 @@ import {
   HttpStatus,
   Post,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { LogInDto, SignUpDto } from './dto';
-import { GetJwt } from './decorators/jwt.decorator';
-import type { JwtPayload } from './interfaces/jwt-payload.interface';
+import { AuthService } from './auth.service.js';
+import { LogInDto, SignUpDto } from './dto/index.js';
+import { GetJwt } from './decorators/jwt.decorator.js';
+import type { JwtPayload } from './interfaces/jwt-payload.interface.js';
 import { Throttle } from '@nestjs/throttler';
-import { Public } from './decorators/public.decorator';
-import { AuthDocument } from './auth.model';
+import { Public } from './decorators/public.decorator.js';
+import { AuthDocument } from './auth.model.js';
 
 @Controller('auth')
 export class AuthController {

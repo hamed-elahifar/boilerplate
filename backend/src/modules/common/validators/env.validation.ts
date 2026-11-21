@@ -10,8 +10,8 @@ import {
   Validate,
   validateSync,
 } from 'class-validator';
-import { IsNumberOrString } from './string-or-number.validator';
-import { Environment } from '../enums/environments.enum';
+import { IsNumberOrString } from './string-or-number.validator.js';
+import { Environment } from '../enums/environments.enum.js';
 
 class EnvironmentVariables {
   // APP

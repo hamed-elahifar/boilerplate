@@ -1,8 +1,8 @@
 import { Controller, Get, ServiceUnavailableException } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { SkipThrottle } from '@nestjs/throttler';
-import { Connection } from 'mongoose';
-import { Public } from '../../auth/decorators/public.decorator';
+import type { Connection } from 'mongoose';
+import { Public } from '../../auth/decorators/public.decorator.js';
 
 @Public()
 @SkipThrottle()

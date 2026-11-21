@@ -89,6 +89,7 @@ When the user requests a durable behavior change, record it here or in the relev
 - DTOs live in each module's `dto/` folder, one class per `<name>.dto.ts` file, re-exported from `dto/index.ts`; controllers and services import from the barrel (`./dto`). Shared ones are in `modules/common/dto`
 - Backend is REST only (NestJS + MongoDB); `users` and `auth` are the feature modules, new collections extend the generic controller/service/repository in `backend/src/modules/common/generic/`
 - Guards, response interceptor, exception filter, and validation pipes are registered as providers in `backend/src/app.module.ts`, not in `main.ts`
+- Backend is native ESM (`"type": "module"`, tsconfig `nodenext`, `nest build` via tsc): relative imports carry `.js` extensions (directories as `./dir/index.js`), `__dirname` is `dirname(fileURLToPath(import.meta.url))`, and CJS packages (mongoose, ioredis, bcryptjs, supertest) use default or `import type` imports, never named value imports. Tests run with `bun run --cwd backend test` (`bun test ./test`, files `*.e2e.spec.ts`), not jest: `@nestjs/throttler` is CJS and cannot `require()` ESM Nest inside jest. Backend TypeScript stays on 5.x (Nest CLI needs the compiler API, absent in TS 7)
 - The generic REST controller exposes an id-scoped `DELETE /:id` (`deleteById`, never `deleteMany`)
 - `NODE_ENV` is one of `development`, `production` or `test`; the env validator rejects anything else. Production gating uses `isProduction()` (`backend/src/modules/common/utils/is-production.ts`)
 - External integrations (Telegram, Redis, S3, SMS, Pusher) are optional and no-op when their env vars are unset; see `backend/docs/adr/0003-optional-integrations.md` and `backend/src/modules/common/AGENTS.md`
@@ -127,7 +128,7 @@ Partially indexed; add further children as folders become durable boundaries.
 ## Shell Workflow (agent environment)
 
 - Never run `cd <dir> && <cmd>` in the Bash tool: it hangs here. Use absolute paths, `git -C <repo> ...`, or a subshell `( cd <dir> ; <cmd> ) < /dev/null`
-- Always pass `< /dev/null` to git, jest and similar, and `--no-pager` to git; send long output to a file (e.g. `> ~/.claude/out.txt 2>&1`) and grep it instead of piping
+- Always pass `< /dev/null` to git, bun test and similar, and `--no-pager` to git; send long output to a file (e.g. `> ~/.claude/out.txt 2>&1`) and grep it instead of piping
 - Heredocs (`<<EOF`) and multi-line `git commit -m` also hang: write files with the Write/Edit tools and commit with `GIT_EDITOR=true git -C <repo> commit -q -F <message-file>`
 - `ls` is an alias for `eza` and rejects plain paths: use `command ls`
-- Run one jest process at a time (shared Mongo); `pkill -f jest` kills the agent's own shell, so do not use it
+- Run one `bun test` process at a time (shared Mongo)

@@ -9,13 +9,13 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { Error as MongooseError, mongo } from 'mongoose';
+import mongoose from 'mongoose';
 import {
   I18nContext,
   I18nValidationError,
   I18nValidationException,
 } from 'nestjs-i18n';
-import { t } from '../utils/i18n';
+import { t } from '../utils/i18n.js';
 
 // Nest's own default texts ("Unauthorized", "Cannot GET /") are replaced by a
 // translated message per status; anything else was written by us and passes through.
@@ -31,7 +31,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   catch(thrown: unknown, host: ArgumentsHost): void {
     // A failed schema check is the caller's mistake, not a crash.
     const exception =
-      thrown instanceof MongooseError.ValidationError
+      thrown instanceof mongoose.Error.ValidationError
         ? new BadRequestException(
             Object.values(thrown.errors)
               .map(
@@ -74,7 +74,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
             : exception.message;
         error = exception.name;
       }
-    } else if (exception instanceof mongo.MongoError) {
+    } else if (exception instanceof mongoose.mongo.MongoError) {
       status = HttpStatus.BAD_REQUEST;
       error = 'Database Error';
 
@@ -100,7 +100,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     // Unexpected errors keep their raw text in the log only, never in the response.
     const ours =
       exception instanceof HttpException ||
-      exception instanceof mongo.MongoError ||
+      exception instanceof mongoose.mongo.MongoError ||
       exception instanceof I18nValidationException;
     const localize = (m: string) =>
       ours && m && !NEST_DEFAULT.test(m)

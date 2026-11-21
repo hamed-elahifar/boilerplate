@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Smsir } from 'sms-typescript';
-import { isProduction } from '../utils/is-production';
+import { isProduction } from '../utils/is-production.js';
 
 /** A delivery backend. Add a driver here (and to `SmsService`) per provider. */
 export interface SmsDriver {

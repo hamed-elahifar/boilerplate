@@ -32,7 +32,7 @@ Owns everything under `common/`. Feature modules (`auth`, `users`) consume it; n
 
 ## Verification
 
-- `cd backend && NODE_ENV=test node_modules/.bin/jest --config ./test/jest-e2e.json --runInBand` (includes `test/common/telegram.e2e-spec.ts`)
+- `bun run --cwd backend test` (all e2e specs under `backend/test/`, including `test/common/telegram.e2e.spec.ts`)
 - `node_modules/.bin/tsc --noEmit -p tsconfig.json`
 
 ## Child DOX Index

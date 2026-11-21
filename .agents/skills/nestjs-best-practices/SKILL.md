@@ -1,130 +1,175 @@
 ---
 name: nestjs-best-practices
-description: NestJS best practices and architecture patterns for building production-ready applications. This skill should be used when writing, reviewing, or refactoring NestJS code to ensure proper patterns for modules, dependency injection, security, and performance.
-license: MIT
-metadata:
-  author: Kadajett
-  version: "1.1.0"
+description: Provides comprehensive NestJS best practices including modular architecture, dependency injection scoping, exception filters, DTO validation with class-validator, and Drizzle ORM integration. Use when designing NestJS modules, implementing providers, creating exception filters, validating DTOs, or integrating Drizzle ORM within NestJS applications.
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
 # NestJS Best Practices
 
-Comprehensive best practices guide for NestJS applications. Contains 40 rules across 10 categories, prioritized by impact to guide automated refactoring and code generation.
+## Overview
 
-## When to Apply
+Grounded in the [Official NestJS Documentation](https://docs.nestjs.com/), this skill enforces modular architecture, dependency injection scoping, exception filters, DTO validation with `class-validator`, and Drizzle ORM integration patterns.
 
-Reference these guidelines when:
+## When to Use
 
-- Writing new NestJS modules, controllers, or services
-- Implementing authentication and authorization
-- Reviewing code for architecture and security issues
-- Refactoring existing NestJS codebases
-- Optimizing performance or database queries
-- Building microservices architectures
+- Designing/refactoring NestJS modules or dependency injection
+- Creating exception filters, validating DTOs, or integrating Drizzle ORM
+- Reviewing code for anti-patterns or onboarding to a NestJS codebase
 
-## Rule Categories by Priority
+## Instructions
 
-| Priority | Category | Impact | Prefix |
-|----------|----------|--------|--------|
-| 1 | Architecture | CRITICAL | `arch-` |
-| 2 | Dependency Injection | CRITICAL | `di-` |
-| 3 | Error Handling | HIGH | `error-` |
-| 4 | Security | HIGH | `security-` |
-| 5 | Performance | HIGH | `perf-` |
-| 6 | Testing | MEDIUM-HIGH | `test-` |
-| 7 | Database & ORM | MEDIUM-HIGH | `db-` |
-| 8 | API Design | MEDIUM | `api-` |
-| 9 | Microservices | MEDIUM | `micro-` |
-| 10 | DevOps & Deployment | LOW-MEDIUM | `devops-` |
+### 1. Modular Architecture
 
-## Quick Reference
+Follow strict module encapsulation. Each domain feature should be its own `@Module()`:
 
-### 1. Architecture (CRITICAL)
+- Export only what other modules need — keep internal providers private
+- Use `forwardRef()` only as a last resort for circular dependencies; prefer restructuring
+- Group related controllers, services, and repositories within the same module
+- Use a `SharedModule` for cross-cutting concerns (logging, configuration, caching)
 
-- `arch-avoid-circular-deps` - Avoid circular module dependencies
-- `arch-feature-modules` - Organize by feature, not technical layer
-- `arch-module-sharing` - Proper module exports/imports, avoid duplicate providers
-- `arch-single-responsibility` - Focused services over "god services"
-- `arch-use-repository-pattern` - Abstract database logic for testability
-- `arch-use-events` - Event-driven architecture for decoupling
+See `references/arch-module-boundaries.md` for enforcement rules.
 
-### 2. Dependency Injection (CRITICAL)
+### 2. Dependency Injection
 
-- `di-avoid-service-locator` - Avoid service locator anti-pattern
-- `di-interface-segregation` - Interface Segregation Principle (ISP)
-- `di-liskov-substitution` - Liskov Substitution Principle (LSP)
-- `di-prefer-constructor-injection` - Constructor over property injection
-- `di-scope-awareness` - Understand singleton/request/transient scopes
-- `di-use-interfaces-tokens` - Use injection tokens for interfaces
+Choose the correct provider scope based on use case:
 
-### 3. Error Handling (HIGH)
+| Scope       | Lifecycle                    | Use Case                                   |
+|-------------|------------------------------|---------------------------------------------|
+| `DEFAULT`   | Singleton (shared)           | Stateless services, repositories            |
+| `REQUEST`   | Per-request instance         | Request-scoped data (tenant, user context)  |
+| `TRANSIENT` | New instance per injection   | Stateful utilities, per-consumer caches     |
 
-- `error-use-exception-filters` - Centralized exception handling
-- `error-throw-http-exceptions` - Use NestJS HTTP exceptions
-- `error-handle-async-errors` - Handle async errors properly
+- Default to `DEFAULT` scope — only use `REQUEST` or `TRANSIENT` when justified
+- Use constructor injection exclusively — avoid property injection
+- Register custom providers with `useClass`, `useValue`, `useFactory`, or `useExisting`
 
-### 4. Security (HIGH)
+See `references/di-provider-scoping.md` for enforcement rules.
 
-- `security-auth-jwt` - Secure JWT authentication
-- `security-validate-all-input` - Validate with class-validator
-- `security-use-guards` - Authentication and authorization guards
-- `security-sanitize-output` - Prevent XSS attacks
-- `security-rate-limiting` - Implement rate limiting
+### 3. Request Lifecycle
 
-### 5. Performance (HIGH)
-
-- `perf-async-hooks` - Proper async lifecycle hooks
-- `perf-use-caching` - Implement caching strategies
-- `perf-optimize-database` - Optimize database queries
-- `perf-lazy-loading` - Lazy load modules for faster startup
-
-### 6. Testing (MEDIUM-HIGH)
-
-- `test-use-testing-module` - Use NestJS testing utilities
-- `test-e2e-supertest` - E2E testing with Supertest
-- `test-mock-external-services` - Mock external dependencies
-
-### 7. Database & ORM (MEDIUM-HIGH)
-
-- `db-use-transactions` - Transaction management
-- `db-avoid-n-plus-one` - Avoid N+1 query problems
-- `db-use-migrations` - Use migrations for schema changes
-
-### 8. API Design (MEDIUM)
-
-- `api-use-dto-serialization` - DTO and response serialization
-- `api-use-interceptors` - Cross-cutting concerns
-- `api-versioning` - API versioning strategies
-- `api-use-pipes` - Input transformation with pipes
-
-### 9. Microservices (MEDIUM)
-
-- `micro-use-patterns` - Message and event patterns
-- `micro-use-health-checks` - Health checks for orchestration
-- `micro-use-queues` - Background job processing
-
-### 10. DevOps & Deployment (LOW-MEDIUM)
-
-- `devops-use-config-module` - Environment configuration
-- `devops-use-logging` - Structured logging
-- `devops-graceful-shutdown` - Zero-downtime deployments
-
-## How to Use
-
-Read individual rule files for detailed explanations and code examples:
+Understand and respect the NestJS request processing pipeline:
 
 ```
-rules/arch-avoid-circular-deps.md
-rules/security-validate-all-input.md
-rules/_sections.md
+Middleware → Guards → Interceptors (before) → Pipes → Route Handler → Interceptors (after) → Exception Filters
 ```
 
-Each rule file contains:
-- Brief explanation of why it matters
-- Incorrect code example with explanation
-- Correct code example with explanation
-- Additional context and references
+- **Middleware**: Cross-cutting concerns (logging, CORS, body parsing)
+- **Guards**: Authorization and authentication checks (return `true`/`false`)
+- **Interceptors**: Transform response data, add caching, measure timing
+- **Pipes**: Validate and transform input parameters
+- **Exception Filters**: Catch and format error responses
 
-## Full Compiled Document
+### 4. Error Handling
 
-For the complete guide with all rules expanded: `AGENTS.md`
+Standardize error responses across the application:
+
+- Extend `HttpException` for HTTP-specific errors
+- Create domain-specific exception classes (e.g., `OrderNotFoundException`)
+- Implement a global `ExceptionFilter` for consistent error formatting
+- Use the Result pattern for expected business logic failures
+- Never silently swallow exceptions
+
+See `references/error-exception-filters.md` for enforcement rules.
+
+### 5. Validation
+
+Enforce input validation at the API boundary:
+
+- Enable `ValidationPipe` globally with `transform: true` and `whitelist: true`
+- Decorate all DTO properties with `class-validator` decorators
+- Use `class-transformer` for type coercion (`@Type()`, `@Transform()`)
+- Create separate DTOs for Create, Update, and Response operations
+- Never trust raw user input — validate everything
+
+See `references/api-validation-dto.md` for enforcement rules.
+
+### 6. Database Patterns (Drizzle ORM)
+
+Integrate Drizzle ORM following NestJS provider conventions:
+
+- Wrap the Drizzle client in an injectable provider
+- Use the Repository pattern for data access encapsulation
+- Define schemas in dedicated schema files per domain module
+- Use transactions for multi-step operations
+- Keep database logic out of controllers
+
+See `references/db-drizzle-patterns.md` for enforcement rules.
+
+## Best Practices
+
+| Area               | Do                                      | Don't                                    |
+|--------------------|------------------------------------------|------------------------------------------|
+| Modules            | One module per domain feature            | Dump everything in `AppModule`           |
+| DI Scoping         | Default to singleton scope               | Use `REQUEST` scope without justification|
+| Error Handling     | Custom exception filters + domain errors | Bare `try/catch` with `console.log`      |
+| Validation         | Global `ValidationPipe` + DTO decorators | Manual `if` checks in controllers        |
+| Database           | Repository pattern with injected client  | Direct DB queries in controllers         |
+| Testing            | Unit test services, e2e test controllers | Skip tests or test implementation details|
+| Configuration      | `@nestjs/config` with typed schemas      | Hardcode values or use `process.env`     |
+
+## Examples
+
+### Example: New Domain Module with Validation
+
+When building a "Product" feature, follow this workflow:
+
+**1. Create the module with proper encapsulation:**
+```typescript
+// product/product.module.ts
+@Module({
+  imports: [DatabaseModule],
+  controllers: [ProductController],
+  providers: [ProductService, ProductRepository],
+  exports: [ProductService], // Only export what others need
+})
+export class ProductModule {}
+```
+
+**2. Create validated DTOs:**
+```typescript
+// product/dto/create-product.dto.ts
+import { IsString, IsNumber, IsPositive, MaxLength } from 'class-validator';
+
+export class CreateProductDto {
+  @IsString() @MaxLength(255) readonly name: string;
+  @IsNumber() @IsPositive() readonly price: number;
+}
+```
+
+**3. Service with error handling:**
+```typescript
+@Injectable()
+export class ProductService {
+  constructor(private readonly productRepository: ProductRepository) {}
+
+  async findById(id: string): Promise<Product> {
+    const product = await this.productRepository.findById(id);
+    if (!product) throw new ProductNotFoundException(id);
+    return product;
+  }
+}
+```
+
+**4. Verify module registration:**
+```bash
+# Check module is imported in AppModule
+grep -r "ProductModule" src/app.module.ts
+
+# Run e2e to confirm exports work
+npx jest --testPathPattern="product"
+```
+
+## Constraints and Warnings
+
+1. **Do not mix scopes without justification** — `REQUEST`-scoped providers cascade to all dependents
+2. **Never access database directly from controllers** — always go through service and repository layers
+3. **Avoid `forwardRef()`** — restructure modules to eliminate circular dependencies
+4. **Do not skip `ValidationPipe`** — always validate at the API boundary with DTOs
+5. **Never hardcode secrets** — use `@nestjs/config` with environment variables
+6. **Keep modules focused** — one domain feature per module, avoid "god modules"
+
+## References
+
+- `references/architecture.md` — Deep-dive into NestJS architectural patterns
+- `references/` — Individual enforcement rules with correct/incorrect examples
+- `assets/templates/` — Starter templates for common NestJS components

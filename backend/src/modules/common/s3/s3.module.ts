@@ -1,8 +1,8 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express';
-import { S3Service } from './s3.service';
-import { UploadController } from './upload.controller';
+import { S3Service } from './s3.service.js';
+import { UploadController } from './upload.controller.js';
 
 @Global()
 @Module({

@@ -1,16 +1,15 @@
-import {
+import mongoose from 'mongoose';
+import type {
   Document,
-  FilterQuery,
-  isValidObjectId,
+  QueryFilter,
   Model,
   Query,
   UpdateQuery,
-  mongo,
 } from 'mongoose';
 import { ConflictException } from '@nestjs/common';
-import { t } from '../utils/i18n';
+import { t } from '../utils/i18n.js';
 
-interface MongoErrorWithKeyPattern extends mongo.MongoError {
+interface MongoErrorWithKeyPattern extends mongoose.mongo.MongoError {
   keyPattern: Record<string, number>;
   keyValue: Record<string, any>;
 }
@@ -23,7 +22,7 @@ export abstract class BaseRepository<T extends Document> {
       const entity = new this.entityModel(createEntityData) as T;
       return await entity.save();
     } catch (error) {
-      if (error instanceof mongo.MongoError && error.code === 11000) {
+      if (error instanceof mongoose.mongo.MongoError && error.code === 11000) {
         const mongoError = error as MongoErrorWithKeyPattern;
         const field = Object.keys(mongoError.keyPattern)[0];
         const value: string = Object.values(mongoError.keyValue)[0] as string;
@@ -35,7 +34,7 @@ export abstract class BaseRepository<T extends Document> {
   }
 
   async findOne(
-    entityFilterQuery: FilterQuery<T>,
+    entityFilterQuery: QueryFilter<T>,
     projection?: string[],
   ): Promise<T | null> {
     let query: Query<T | null, T>;
@@ -50,7 +49,7 @@ export abstract class BaseRepository<T extends Document> {
   }
 
   async findAll(
-    entityFilterQuery: FilterQuery<T> = {},
+    entityFilterQuery: QueryFilter<T> = {},
     projection?: string[],
     pagination?: { limit?: number; offset?: number },
   ): Promise<T[] | null> {
@@ -75,11 +74,13 @@ export abstract class BaseRepository<T extends Document> {
 
   /** `null` for a malformed id instead of a CastError. */
   async findById(id: string): Promise<T | null> {
-    return isValidObjectId(id) ? this.entityModel.findById(id).exec() : null;
+    return mongoose.isValidObjectId(id)
+      ? this.entityModel.findById(id).exec()
+      : null;
   }
 
   async page(
-    filter: FilterQuery<T>,
+    filter: QueryFilter<T>,
     sort: Record<string, 1 | -1>,
     offset: number,
     limit: number,
@@ -91,22 +92,23 @@ export abstract class BaseRepository<T extends Document> {
     return { items, total };
   }
 
-  count(filter: FilterQuery<T> = {}) {
+  count(filter: QueryFilter<T> = {}) {
     return this.entityModel.countDocuments(filter);
   }
 
-  async exists(filter: FilterQuery<T>): Promise<boolean> {
+  async exists(filter: QueryFilter<T>): Promise<boolean> {
     return !!(await this.entityModel.exists(filter));
   }
 
   async existsById(id: string) {
     return (
-      isValidObjectId(id) && !!(await this.entityModel.exists({ _id: id }))
+      mongoose.isValidObjectId(id) &&
+      !!(await this.entityModel.exists({ _id: id }))
     );
   }
 
   async update(
-    entityFilterQuery: FilterQuery<T>,
+    entityFilterQuery: QueryFilter<T>,
     updateEntityData: UpdateQuery<T>,
   ): Promise<T | null> {
     return this.entityModel.findOneAndUpdate(
@@ -118,7 +120,7 @@ export abstract class BaseRepository<T extends Document> {
     );
   }
 
-  async delete(entityFilterQuery: FilterQuery<T>): Promise<boolean> {
+  async delete(entityFilterQuery: QueryFilter<T>): Promise<boolean> {
     const result = await this.entityModel.deleteMany(entityFilterQuery);
     return result.deletedCount >= 1;
   }
@@ -129,7 +131,7 @@ export abstract class BaseRepository<T extends Document> {
   }
 
   async upsert(
-    entityFilterQuery: FilterQuery<T>,
+    entityFilterQuery: QueryFilter<T>,
     updateEntityData: UpdateQuery<T>,
   ): Promise<T | null> {
     return this.entityModel

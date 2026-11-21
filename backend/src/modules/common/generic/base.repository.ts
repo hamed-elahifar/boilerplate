@@ -115,7 +115,7 @@ export abstract class BaseRepository<T extends Document> {
       entityFilterQuery,
       updateEntityData,
       {
-        new: true,
+        returnDocument: 'after',
       },
     );
   }
@@ -136,7 +136,7 @@ export abstract class BaseRepository<T extends Document> {
   ): Promise<T | null> {
     return this.entityModel
       .findOneAndUpdate(entityFilterQuery, updateEntityData, {
-        new: true,
+        returnDocument: 'after',
         upsert: true,
       })
       .exec();

@@ -97,7 +97,7 @@ When the user requests a durable behavior change, record it here or in the relev
 ## Frontend Contracts
 
 - `frontend/` is Vue 3 + Vite + Tailwind v4 + shadcn-vue + vue-router only (no Pinia, no GraphQL client); see `frontend/docs/adr/0001-frontend-stack.md`
-- All backend traffic goes through `frontend/src/lib/api.ts` (base `/api`, same origin); auth is email + password only, the JWT lives in localStorage, and any 401 redirects to `/login`
+- All backend traffic goes through `frontend/src/lib/api.ts` (base `/api`, same origin); auth is username + password only (`POST /api/auth/sign-up`, `sign-in`, `GET me`), the JWT lives in localStorage, and any 401 redirects to `/login`
 - Themes: the default lives in `src/assets/main.css`; each extra theme is a `[data-theme]` block pair in `src/assets/themes.css` plus an entry in `src/composables/useTheme.ts`. Users pick theme and dark mode on the Settings page
 
 ## Deployment
